@@ -167,7 +167,10 @@ export const Home = () => {
         style={styles.currentPlayingContainer}
         source={logo}
       >
-        <Image source={{ uri: songCover }} style={styles.songCover} />
+        <Image
+          source={songCover ? { uri: songCover } : logo}
+          style={styles.songCover}
+        />
         <Text style={styles.playingNowText}>Tocando agora</Text>
         <Text style={styles.playingNowSong}>{currentSong}</Text>
 

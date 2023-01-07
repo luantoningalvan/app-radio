@@ -31,8 +31,10 @@ import {
 } from "phosphor-react-native";
 import Slider from "@react-native-community/slider";
 import { BannerSlider } from "../../components/BannerSlider";
+import MusicControl, { Command } from "react-native-music-control";
 
-const URL_STREAMING = "http://78.129.202.200:8040/;";
+const URL_STREAMING =
+  "http://shoutcast.tvcbrasilia.com:8000/;?type=http&nocache=36557";
 
 export const Home = () => {
   const soundObject = useRef(new Audio.Sound());
@@ -43,72 +45,21 @@ export const Home = () => {
   const [currentSong, setCurrentSong] = useState("");
   const [songCover, setSongCover] = useState("");
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const response = await fetch(
-        "http://78.129.202.200:8040/currentsong?sid=1"
-      );
-      const data = await response.text();
-
-      console.log(data);
-
-      setCurrentSong(data);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const response = fetch(
-      `https://itunes.apple.com/search?term=${currentSong}&entity=song`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (data.results.length > 0) {
-          setSongCover(
-            String(data.results[0].artworkUrl100).replace("100x100", "300x300")
-          );
-        }
-      });
-  }, [currentSong]);
-
-  useEffect(() => {
-    async function prepareAudio() {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        staysActiveInBackground: true,
-        interruptionModeIOS: InterruptionModeIOS.DoNotMix,
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: true,
-        interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
-        playThroughEarpieceAndroid: false,
-      });
-
-      await soundObject.current?.loadAsync(
-        { uri: URL_STREAMING },
-        {
-          shouldPlay: false,
-          shouldCorrectPitch: true,
-          volume: 1.0,
-          isMuted: false,
-        }
-      );
-
-      setIsReady(true);
-    }
-
-    prepareAudio();
-  }, [soundObject]);
-
   const playAudio = useCallback(async () => {
     try {
       if (playing) {
         await soundObject.current.pauseAsync();
         setPlaying(false);
+        MusicControl.updatePlayback({
+          state: MusicControl.STATE_PAUSED,
+        });
       } else {
-        await soundObject.current.playAsync();
+        await soundObject.current.setPositionAsync(0);
+        await soundObject.current.playFromPositionAsync(0);
         setPlaying(true);
+        MusicControl.updatePlayback({
+          state: MusicControl.STATE_PLAYING,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -145,7 +96,87 @@ export const Home = () => {
       message: "Venha ouvir a Positiva FM 96.5 comigo!",
       url: "https://positivafmdf.com.br",
     });
+  }, [currentSong]);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const response = await fetch(
+        "http://shoutcast.tvcbrasilia.com:8000/currentsong?sid=1"
+      );
+      const data = await response.text();
+
+      setCurrentSong(data.replace(/(19|20)[0-9][0-9]/g, ""));
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (currentSong) {
+      fetch(`https://itunes.apple.com/search?term=${currentSong}&entity=song`)
+        .then((response) => response.json())
+        .then((data) => {
+          let artwork = logo;
+
+          if (data.results.length > 0) {
+            setSongCover(
+              String(data.results[0].artworkUrl100).replace(
+                "100x100",
+                "300x300"
+              )
+            );
+
+            artwork = data.results[0].artworkUrl100;
+          }
+
+          MusicControl.setNowPlaying({
+            title: currentSong,
+            artwork: artwork,
+            artist: "Radio Positiva FM 96.5",
+            description: "",
+            isLiveStream: true,
+          });
+        });
+    }
+  }, [currentSong]);
+
+  useEffect(() => {
+    async function prepareAudio() {
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        staysActiveInBackground: true,
+        interruptionModeIOS: InterruptionModeIOS.DoNotMix,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: true,
+        interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
+        playThroughEarpieceAndroid: false,
+      });
+
+      MusicControl.enableControl("pause", true);
+      MusicControl.enableControl("play", true);
+      MusicControl.enableControl("stop", true);
+
+      await soundObject.current?.loadAsync(
+        { uri: URL_STREAMING },
+        {
+          shouldPlay: false,
+          shouldCorrectPitch: true,
+          volume: 1.0,
+          isMuted: false,
+        }
+      );
+
+      setIsReady(true);
+    }
+
+    prepareAudio();
+  }, [soundObject]);
+
+  useEffect(() => {
+    MusicControl.on(Command.play, playAudio);
+    MusicControl.on(Command.pause, playAudio);
+    MusicControl.on(Command.togglePlayPause, playAudio);
+  }, [playAudio]);
 
   if (!isReady) {
     return (

@@ -7,6 +7,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   ImageBackground,
   Linking,
@@ -22,7 +23,6 @@ import { styles } from "./styles";
 import {
   Pause,
   Play,
-  Screencast,
   ShareNetwork,
   SpeakerSimpleHigh,
   SpeakerSimpleLow,
@@ -32,6 +32,14 @@ import {
 import Slider from "@react-native-community/slider";
 import { BannerSlider } from "../../components/BannerSlider";
 import MusicControl, { Command } from "react-native-music-control";
+import GoogleCast, {
+  CastButton,
+  useRemoteMediaClient,
+  MediaStreamType,
+  useCastState,
+  CastState,
+  MediaPlayerState,
+} from "react-native-google-cast";
 
 const URL_STREAMING =
   "http://shoutcast.tvcbrasilia.com:8000/;?type=http&nocache=36557";
@@ -44,27 +52,41 @@ export const Home = () => {
   const [volume, setVolume] = useState(0.7);
   const [currentSong, setCurrentSong] = useState("");
   const [songCover, setSongCover] = useState("");
+  const castState = useCastState();
+  const sessionManager = GoogleCast.getSessionManager();
+
+  const client = useRemoteMediaClient();
 
   const playAudio = useCallback(async () => {
     try {
       if (playing) {
-        await soundObject.current.pauseAsync();
         setPlaying(false);
-        MusicControl.updatePlayback({
-          state: MusicControl.STATE_PAUSED,
-        });
+
+        if (castState === CastState.CONNECTED) {
+          client?.pause();
+        } else {
+          await soundObject.current.pauseAsync();
+          MusicControl.updatePlayback({
+            state: MusicControl.STATE_PAUSED,
+          });
+        }
       } else {
-        await soundObject.current.setPositionAsync(0);
-        await soundObject.current.playFromPositionAsync(0);
         setPlaying(true);
-        MusicControl.updatePlayback({
-          state: MusicControl.STATE_PLAYING,
-        });
+        if (castState === CastState.CONNECTED) {
+          await client?.seek({ relative: true, position: 0 });
+          await client?.play();
+        } else {
+          await soundObject.current.setPositionAsync(0);
+          await soundObject.current.playFromPositionAsync(0);
+          MusicControl.updatePlayback({
+            state: MusicControl.STATE_PLAYING,
+          });
+        }
       }
     } catch (error) {
       console.log(error);
     }
-  }, [playing, soundObject]);
+  }, [playing, soundObject, castState]);
 
   const handleChangeVolume = useCallback(
     async (volume: number) => {
@@ -91,7 +113,7 @@ export const Home = () => {
   };
 
   const handleShare = useCallback(async () => {
-    Share.share({
+    await Share.share({
       title: `Estou ouvindo ${currentSong} na Positiva FM 96.5`,
       message: "Venha ouvir a Positiva FM 96.5 comigo!",
       url: "https://positivafmdf.com.br",
@@ -118,7 +140,7 @@ export const Home = () => {
         .then((data) => {
           let artwork = logo;
 
-          if (data.results.length > 0) {
+          if (data.results.length > 0 && data.results[0].artworkUrl100) {
             setSongCover(
               String(data.results[0].artworkUrl100).replace(
                 "100x100",
@@ -129,13 +151,32 @@ export const Home = () => {
             artwork = data.results[0].artworkUrl100;
           }
 
-          MusicControl.setNowPlaying({
-            title: currentSong,
-            artwork: artwork,
-            artist: "Radio Positiva FM 96.5",
-            description: "",
-            isLiveStream: true,
-          });
+          if (castState === CastState.CONNECTED) {
+            client?.queueInsertAndPlayItem({
+              mediaInfo: {
+                contentUrl: URL_STREAMING,
+                contentType: "audio/mpeg",
+                streamType: MediaStreamType.LIVE,
+                metadata: {
+                  type: "musicTrack",
+                  title: currentSong,
+                  images: [
+                    {
+                      url: artwork,
+                    },
+                  ],
+                },
+              },
+            });
+          } else {
+            MusicControl.setNowPlaying({
+              title: currentSong,
+              artwork: artwork,
+              artist: "Radio Positiva FM 96.5",
+              description: "",
+              isLiveStream: true,
+            });
+          }
         });
     }
   }, [currentSong]);
@@ -154,7 +195,7 @@ export const Home = () => {
 
       MusicControl.enableControl("pause", true);
       MusicControl.enableControl("play", true);
-      MusicControl.enableControl("stop", true);
+      MusicControl.enableControl("stop", false);
 
       await soundObject.current?.loadAsync(
         { uri: URL_STREAMING },
@@ -177,6 +218,65 @@ export const Home = () => {
     MusicControl.on(Command.pause, playAudio);
     MusicControl.on(Command.togglePlayPause, playAudio);
   }, [playAudio]);
+
+  useEffect(() => {
+    client?.onMediaStatusUpdated((status) => {
+      if (status?.playerState === MediaPlayerState.PAUSED) {
+        setPlaying(false);
+      }
+
+      if (status?.playerState === MediaPlayerState.PLAYING) {
+        setPlaying(true);
+      }
+    });
+
+    sessionManager.onSessionStarted(async (session) => {
+      await soundObject.current?.unloadAsync();
+      MusicControl.resetNowPlaying();
+
+      client?.loadMedia({
+        mediaInfo: {
+          streamType: MediaStreamType.LIVE,
+          contentUrl: URL_STREAMING,
+          contentType: "audio/mp3",
+          metadata: {
+            type: "musicTrack",
+            artist: "Radio Positiva FM 96.5",
+            title: currentSong,
+            images: [
+              {
+                url: songCover,
+                height: 300,
+                width: 300,
+              },
+            ],
+          },
+        },
+      });
+    });
+
+    sessionManager.onSessionEnded(async () => {
+      client?.stop();
+
+      MusicControl.setNowPlaying({
+        title: currentSong,
+        artwork: songCover,
+        artist: "Radio Positiva FM 96.5",
+        description: "",
+        isLiveStream: true,
+      });
+
+      await soundObject.current?.loadAsync(
+        { uri: URL_STREAMING },
+        {
+          shouldPlay: true,
+          shouldCorrectPitch: true,
+          volume: 1.0,
+          isMuted: false,
+        }
+      );
+    });
+  }, [client, sessionManager, soundObject, currentSong, songCover]);
 
   if (!isReady) {
     return (
@@ -237,9 +337,10 @@ export const Home = () => {
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton}>
+          <CastButton style={{ width: 54, height: 54 }} />
+          {/* <TouchableOpacity style={styles.secondaryButton}>
             <Screencast color="#fff" weight="bold" size={28} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.playerButtons}>
           <TouchableOpacity onPress={() => handleChangeVolume(0)}>

@@ -14,11 +14,11 @@ PODS:
     - ExpoModulesCore
   - EXFont (11.0.1):
     - ExpoModulesCore
-  - Expo (47.0.9):
+  - Expo (47.0.12):
     - ExpoModulesCore
   - ExpoKeepAwake (11.0.1):
     - ExpoModulesCore
-  - ExpoModulesCore (1.0.4):
+  - ExpoModulesCore (1.1.1):
     - React-Core
     - ReactCommon/turbomodule/core
   - EXSplashScreen (0.17.5):
@@ -34,6 +34,8 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.70.5)
   - fmt (6.2.1)
   - glog (0.3.5)
+  - google-cast-sdk-dynamic-xcframework-no-bluetooth (4.7.1)
+  - PromisesObjC (2.1.1)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -243,6 +245,16 @@ PODS:
   - React-jsinspector (0.70.5)
   - React-logger (0.70.5):
     - glog
+  - react-native-google-cast (4.6.1):
+    - React
+    - react-native-google-cast/NoBluetoothArm (= 4.6.1)
+  - react-native-google-cast/NoBluetoothArm (4.6.1):
+    - google-cast-sdk-dynamic-xcframework-no-bluetooth
+    - React
+    - react-native-google-cast/RNGoogleCast
+  - react-native-google-cast/RNGoogleCast (4.6.1):
+    - PromisesObjC
+    - React
   - react-native-music-control (1.4.1):
     - React-Core
   - react-native-slider (4.2.4):
@@ -348,6 +360,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-google-cast (from `../node_modules/react-native-google-cast`)
   - react-native-music-control (from `../node_modules/react-native-music-control`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -368,6 +381,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - fmt
+    - google-cast-sdk-dynamic-xcframework-no-bluetooth
+    - PromisesObjC
 
 EXTERNAL SOURCES:
   boost:
@@ -428,6 +443,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-google-cast:
+    :path: "../node_modules/react-native-google-cast"
   react-native-music-control:
     :path: "../node_modules/react-native-music-control"
   react-native-slider:
@@ -470,14 +487,16 @@ SPEC CHECKSUMS:
   EXErrorRecovery: ae43433feb0608a64dc5b1c8363b3e7769a9ea24
   EXFileSystem: 60602b6eefa6873f97172c684b7537c9760b50d6
   EXFont: 319606bfe48c33b5b5063fb0994afdc496befe80
-  Expo: 5523a4835730104a301caeac1e68dad095a9dfff
+  Expo: f48d305fda3e4e501d686e6bad7d8c8373828279
   ExpoKeepAwake: 69b59d0a8d2b24de9f82759c39b3821fec030318
-  ExpoModulesCore: 8211c89bcc3ba86e2d02c54b1d31f1fa81acb6de
+  ExpoModulesCore: 485dff3a59b036a33b6050c0a5aea3cf1037fdd1
   EXSplashScreen: 3e989924f61a8dd07ee4ea584c6ba14be9b51949
   FBLazyVector: affa4ba1bfdaac110a789192f4d452b053a86624
   FBReactNativeSpec: fe8b5f1429cfe83a8d72dc8ed61dc7704cac8745
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
+  google-cast-sdk-dynamic-xcframework-no-bluetooth: 1fa9e267df3fd6f8a1c6e3345142ca5286297968
+  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: 21229f84411088e5d8538f21212de49e46cc83e2
   RCTTypeSafety: 62eed57a32924b09edaaf170a548d1fc96223086
@@ -492,6 +511,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 31564fa6912459921568e8b0e49024285a4d584b
   React-jsinspector: badd81696361249893a80477983e697aab3c1a34
   React-logger: fdda34dd285bdb0232e059b19d9606fa0ec3bb9c
+  react-native-google-cast: 03a17bb1b810355978af2b6105029a2197cb0b86
   react-native-music-control: 3fc719c179a6562e18af1ac6e30ba9e33b397a31
   react-native-slider: cecabb58ecffad671d2ad3ccc58c7f4d2d029e95
   React-perflogger: e68d3795cf5d247a0379735cbac7309adf2fb931

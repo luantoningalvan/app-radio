@@ -1,4 +1,5 @@
 package com.brightmoon.radiopositiva96;
+import com.google.android.gms.cast.framework.CastContext;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,9 @@ public class MainActivity extends ReactActivity {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null);
+// @generated begin react-native-google-cast-onCreate - expo prebuild (DO NOT MODIFY) sync-db583defdeb0226930ad5278e6c069db65777d42
+    CastContext.getSharedInstance(this);
+// @generated end react-native-google-cast-onCreate
   }
 
   /**

@@ -1,4 +1,9 @@
 #import "AppDelegate.h"
+// @generated begin react-native-google-cast-import - expo prebuild (DO NOT MODIFY) sync-da0acf16745f87cea5bffba9c0cc3a4f5e4387ea
+#if __has_include(<GoogleCast/GoogleCast.h>)
+#import <GoogleCast/GoogleCast.h>
+#endif
+// @generated end react-native-google-cast-import
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -35,6 +40,15 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 {
   RCTAppSetupPrepareApp(application);
 
+// @generated begin react-native-google-cast-didFinishLaunchingWithOptions - expo prebuild (DO NOT MODIFY) sync-2ad935d6407dfa591d7171af9da1b03d7c763404
+#if __has_include(<GoogleCast/GoogleCast.h>)
+  NSString *receiverAppID = kGCKDefaultMediaReceiverApplicationID;
+  GCKDiscoveryCriteria *criteria = [[GCKDiscoveryCriteria alloc] initWithApplicationID:receiverAppID];
+  GCKCastOptions* options = [[GCKCastOptions alloc] initWithDiscoveryCriteria:criteria];
+  options.startDiscoveryAfterFirstTapOnCastButton = true;
+  [GCKCastContext setSharedInstanceWithOptions:options];
+#endif
+// @generated end react-native-google-cast-didFinishLaunchingWithOptions
   RCTBridge *bridge = [self.reactDelegate createBridgeWithDelegate:self launchOptions:launchOptions];
 
 #if RCT_NEW_ARCH_ENABLED

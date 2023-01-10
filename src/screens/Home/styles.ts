@@ -3,7 +3,10 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 32,
   },
   loadingContainer: {
     flex: 1,
@@ -12,15 +15,17 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   currentPlayingContainer: {
+    flex: 1,
+  },
+  playingNow: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
   },
   mainButton: {
     width: 64,
     height: 64,
     borderRadius: 64,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 24,
@@ -46,7 +51,11 @@ export const styles = StyleSheet.create({
   },
   player: {
     alignItems: "center",
-    marginVertical: 24,
+    justifyContent: "center",
+    width: "100%",
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
   playerButtons: {
     flexDirection: "row",
@@ -76,4 +85,10 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     marginLeft: 8,
   },
+  logo: {
+    width: 116,
+    height: 116,
+    marginBottom: 24,
+  },
+  safeArea: { flex: 0, backgroundColor: "rgba(0, 0, 0, 0.3)" },
 });

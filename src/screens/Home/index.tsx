@@ -10,6 +10,8 @@ import {
   Image,
   ImageBackground,
   Linking,
+  Platform,
+  SafeAreaView,
   Share,
   StatusBar,
   Text,
@@ -22,7 +24,6 @@ import { styles } from "./styles";
 import {
   Pause,
   Play,
-  Screencast,
   ShareNetwork,
   SpeakerSimpleHigh,
   SpeakerSimpleLow,
@@ -30,8 +31,10 @@ import {
   WhatsappLogo,
 } from "phosphor-react-native";
 import Slider from "@react-native-community/slider";
-import { BannerSlider } from "../../components/BannerSlider";
 import MusicControl, { Command } from "react-native-music-control";
+
+const PLACEHOLDER_IMAGE =
+  "https://zerojackerzz.com/wp-content/uploads/2019/10/album-placeholder.png";
 
 const URL_STREAMING =
   "http://shoutcast.tvcbrasilia.com:8000/;?type=http&nocache=36557";
@@ -54,15 +57,21 @@ export const Home = () => {
           state: MusicControl.STATE_PAUSED,
         });
       } else {
-        await soundObject.current.setPositionAsync(0);
-        await soundObject.current.playFromPositionAsync(0);
+        if (Platform.OS === "ios") {
+          await soundObject.current.replayAsync();
+        } else {
+          await soundObject.current.setPositionAsync(0);
+          await soundObject.current.playFromPositionAsync(0);
+        }
+
         setPlaying(true);
+
         MusicControl.updatePlayback({
           state: MusicControl.STATE_PLAYING,
         });
       }
     } catch (error) {
-      console.log(error);
+      console.log(JSON.stringify(error));
     }
   }, [playing, soundObject]);
 
@@ -127,6 +136,8 @@ export const Home = () => {
             );
 
             artwork = data.results[0].artworkUrl100;
+          } else {
+            setSongCover("");
           }
 
           MusicControl.setNowPlaying({
@@ -154,7 +165,8 @@ export const Home = () => {
 
       MusicControl.enableControl("pause", true);
       MusicControl.enableControl("play", true);
-      MusicControl.enableControl("stop", true);
+      MusicControl.enableControl("", true);
+      MusicControl.enableControl("stop", false);
 
       await soundObject.current?.loadAsync(
         { uri: URL_STREAMING },
@@ -187,7 +199,7 @@ export const Home = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <>
       <StatusBar
         backgroundColor="transparent"
         translucent
@@ -196,67 +208,73 @@ export const Home = () => {
       <ImageBackground
         blurRadius={4}
         style={styles.currentPlayingContainer}
-        source={logo}
+        source={{ uri: songCover ? songCover : PLACEHOLDER_IMAGE }}
       >
-        <Image
-          source={songCover ? { uri: songCover } : logo}
-          style={styles.songCover}
+        <SafeAreaView style={styles.container}>
+          <Image source={logo} style={styles.logo} />
+
+          <View style={styles.playingNow}>
+            <Image
+              source={{ uri: songCover ? songCover : PLACEHOLDER_IMAGE }}
+              style={styles.songCover}
+            />
+            <Text style={styles.playingNowText}>Tocando agora</Text>
+            <Text style={styles.playingNowSong}>
+              {currentSong || "Buscando título..."}
+            </Text>
+          </View>
+
+          <View style={styles.player}>
+            <View style={styles.playerButtons}>
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={handleShare}
+              >
+                <ShareNetwork color="#fff" weight="bold" size={28} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.mainButton}
+                onPress={() => playAudio()}
+              >
+                {playing ? (
+                  <Pause size={32} weight="fill" />
+                ) : (
+                  <Play size={32} weight="fill" />
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={() =>
+                  Linking.openURL(
+                    "whatsapp://send?text=Olá, estou ouvindo a Positiva FM 96.5!&phone=+556181579696"
+                  )
+                }
+              >
+                <WhatsappLogo color="#fff" size={28} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.playerButtons}>
+              <TouchableOpacity onPress={() => handleChangeVolume(0)}>
+                {showVolumeIcon()}
+              </TouchableOpacity>
+              <Slider
+                style={{ width: "65%", height: 40, marginLeft: 16 }}
+                minimumValue={0}
+                maximumValue={1}
+                onValueChange={handleChangeVolume}
+                value={volume}
+                minimumTrackTintColor="#FFFFFF"
+                maximumTrackTintColor="#717171"
+                thumbTintColor="#fff"
+              />
+            </View>
+          </View>
+        </SafeAreaView>
+        <SafeAreaView
+          style={{ flex: 0, backgroundColor: "rgba(0,0,0,0.65)" }}
         />
-        <Text style={styles.playingNowText}>Tocando agora</Text>
-        <Text style={styles.playingNowSong}>{currentSong}</Text>
-
-        <TouchableOpacity
-          style={styles.whatsappButton}
-          onPress={() =>
-            Linking.openURL(
-              "whatsapp://send?text=Olá, estou ouvindo a Positiva FM 96.5!&phone=+556181579696"
-            )
-          }
-        >
-          <WhatsappLogo color="#fff" weight="fill" />
-          <Text style={styles.whatsappButtonText}>Enviar mensagem</Text>
-        </TouchableOpacity>
       </ImageBackground>
-      <BannerSlider />
-      <View style={styles.player}>
-        <View style={styles.playerButtons}>
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={handleShare}
-          >
-            <ShareNetwork color="#fff" weight="bold" size={28} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.mainButton}
-            onPress={() => playAudio()}
-          >
-            {playing ? (
-              <Pause size={32} weight="fill" />
-            ) : (
-              <Play size={32} weight="fill" />
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.secondaryButton}>
-            <Screencast color="#fff" weight="bold" size={28} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.playerButtons}>
-          <TouchableOpacity onPress={() => handleChangeVolume(0)}>
-            {showVolumeIcon()}
-          </TouchableOpacity>
-          <Slider
-            style={{ width: "65%", height: 40, marginLeft: 16 }}
-            minimumValue={0}
-            maximumValue={1}
-            onValueChange={handleChangeVolume}
-            value={volume}
-            minimumTrackTintColor="#FFFFFF"
-            maximumTrackTintColor="#717171"
-            thumbTintColor="#fff"
-          />
-        </View>
-      </View>
-    </View>
+    </>
   );
 };

@@ -107,6 +107,20 @@ export const Home = () => {
     });
   }, [currentSong]);
 
+  const handleOpenWhatsapp = useCallback(async () => {
+    await Linking.canOpenURL("whatsapp://send?text=oi").then((supported) => {
+      if (supported) {
+        return Linking.openURL(
+          "whatsapp://send?text=Olá, estou ouvindo a Positiva FM 96.5!&phone=+556181579696"
+        );
+      } else {
+        return Linking.openURL(
+          "https://api.whatsapp.com/send?text=Olá, estou ouvindo a Positiva FM 96.5!&phone=+556181579696"
+        );
+      }
+    });
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(async () => {
       const response = await fetch(
@@ -245,11 +259,7 @@ export const Home = () => {
 
               <TouchableOpacity
                 style={styles.secondaryButton}
-                onPress={() =>
-                  Linking.openURL(
-                    "whatsapp://send?text=Olá, estou ouvindo a Positiva FM 96.5!&phone=+556181579696"
-                  )
-                }
+                onPress={handleOpenWhatsapp}
               >
                 <WhatsappLogo color="#fff" size={28} />
               </TouchableOpacity>

@@ -6,8 +6,6 @@ PODS:
   - EXAV (13.0.2):
     - ExpoModulesCore
     - ReactCommon/turbomodule/core
-  - EXBackgroundFetch (11.0.1):
-    - ExpoModulesCore
   - EXConstants (14.0.2):
     - ExpoModulesCore
   - EXErrorRecovery (4.0.1):
@@ -26,9 +24,6 @@ PODS:
   - EXSplashScreen (0.17.5):
     - ExpoModulesCore
     - React-Core
-  - EXTaskManager (11.0.1):
-    - ExpoModulesCore
-    - UMAppLoader
   - FBLazyVector (0.70.5)
   - FBReactNativeSpec (0.70.5):
     - RCT-Folly (= 2021.07.22.00)
@@ -320,7 +315,6 @@ PODS:
     - React-perflogger (= 0.70.5)
   - RNSVG (13.4.0):
     - React-Core
-  - UMAppLoader (4.0.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -328,7 +322,6 @@ DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../node_modules/expo-application/ios`)
   - EXAV (from `../node_modules/expo-av/ios`)
-  - EXBackgroundFetch (from `../node_modules/expo-background-fetch/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
@@ -337,7 +330,6 @@ DEPENDENCIES:
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
-  - EXTaskManager (from `../node_modules/expo-task-manager/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -371,7 +363,6 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNSVG (from `../node_modules/react-native-svg`)
-  - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -387,8 +378,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-application/ios"
   EXAV:
     :path: "../node_modules/expo-av/ios"
-  EXBackgroundFetch:
-    :path: "../node_modules/expo-background-fetch/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXErrorRecovery:
@@ -405,8 +394,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core"
   EXSplashScreen:
     :path: "../node_modules/expo-splash-screen/ios"
-  EXTaskManager:
-    :path: "../node_modules/expo-task-manager/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -471,8 +458,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNSVG:
     :path: "../node_modules/react-native-svg"
-  UMAppLoader:
-    :path: "../node_modules/unimodules-app-loader/ios"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -481,7 +466,6 @@ SPEC CHECKSUMS:
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: 034b1c40a8e9fe1bff76a1e511ee90dff64ad834
   EXAV: 9a45d37772c5329294c054a041dcc39931fc5032
-  EXBackgroundFetch: 186248a00a38fc4d22d60ec30e4e751449e785ee
   EXConstants: 3c86653c422dd77e40d10cbbabb3025003977415
   EXErrorRecovery: ae43433feb0608a64dc5b1c8363b3e7769a9ea24
   EXFileSystem: 60602b6eefa6873f97172c684b7537c9760b50d6
@@ -490,7 +474,6 @@ SPEC CHECKSUMS:
   ExpoKeepAwake: 69b59d0a8d2b24de9f82759c39b3821fec030318
   ExpoModulesCore: 8211c89bcc3ba86e2d02c54b1d31f1fa81acb6de
   EXSplashScreen: 3e989924f61a8dd07ee4ea584c6ba14be9b51949
-  EXTaskManager: 0afcc6fd813dec5dee98aa5ec4f22c2a840dd4a7
   FBLazyVector: affa4ba1bfdaac110a789192f4d452b053a86624
   FBReactNativeSpec: fe8b5f1429cfe83a8d72dc8ed61dc7704cac8745
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
@@ -524,7 +507,6 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 7401c4a40f8728fd89df4a56104541b760876117
   ReactCommon: c9246996e73bf75a2c6c3ff15f1e16707cdc2da9
   RNSVG: 07dbd870b0dcdecc99b3a202fa37c8ca163caec2
-  UMAppLoader: 354d71d2d2ce8d6c19fb13d72b9c8209b18a8c56
   Yoga: eca980a5771bf114c41a754098cd85e6e0d90ed7
 
 PODFILE CHECKSUM: b1bd6bd887ec273dae426ded41b549f91a2c2167

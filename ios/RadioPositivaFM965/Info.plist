@@ -31,6 +31,10 @@
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>whatsapp</string>
+    </array>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
@@ -69,10 +73,6 @@
       <string>UIInterfaceOrientationPortraitUpsideDown</string>
       <string>UIInterfaceOrientationLandscapeLeft</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>whatsapp</string>
     </array>
     <key>UIUserInterfaceStyle</key>
     <string>Light</string>

@@ -86,8 +86,8 @@ export const styles = StyleSheet.create({
     marginLeft: 8,
   },
   logo: {
-    width: 116,
-    height: 116,
+    width: 170,
+    height: 110,
     marginBottom: 24,
   },
   safeArea: { flex: 0, backgroundColor: "rgba(0, 0, 0, 0.3)" },

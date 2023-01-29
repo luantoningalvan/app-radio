@@ -179,7 +179,6 @@ export const Home = () => {
 
       MusicControl.enableControl("pause", true);
       MusicControl.enableControl("play", true);
-      MusicControl.enableControl("", true);
       MusicControl.enableControl("stop", false);
 
       await soundObject.current?.loadAsync(

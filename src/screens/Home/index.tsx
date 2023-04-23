@@ -100,11 +100,17 @@ export const Home = () => {
   };
 
   const handleShare = useCallback(async () => {
-    Share.share({
-      title: `Estou ouvindo ${currentSong} na Positiva FM 96.5`,
-      message: "Venha ouvir a Positiva FM 96.5 comigo!",
-      url: "https://positivafmdf.com.br",
-    });
+    try {
+      await Share.share({
+        message: `
+Estou ouvindo ${currentSong} na Positiva FM 96.5, venha ouvir comigo!
+Baixe agora o app:
+Android: https://play.google.com/store/apps/details?id=com.brightmoon.radiopositiva96
+iOS: https://apps.apple.com/us/app/radio-positiva-fm-96-5/id1664288850
+    `,
+        url: "https://apps.apple.com/us/app/radio-positiva-fm-96-5/id1664288850",
+      });
+    } catch (error) {}
   }, [currentSong]);
 
   const handleOpenWhatsapp = useCallback(async () => {

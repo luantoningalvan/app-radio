@@ -1,6 +1,6 @@
 {
   "name": "radio",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
